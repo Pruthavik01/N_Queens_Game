@@ -1,10 +1,9 @@
 import React from "react";
 import Header from "./Header";
 import Grid from "./Grid";
-import InfoCards from "./InfoCards";
+import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 import "../index.css";
-import infoIcon from "../assets/info.png"; // Import the info icon
 
 export default function App() {
   const generateNumber = () => {
@@ -15,25 +14,11 @@ export default function App() {
     <div className="App">
       <Header />
       <main className="main-content">
-        <div className="content-wrapper" style={{ position: "relative" }}>
-          <img
-            src={infoIcon}
-            alt="Info"
-            className="info-icon"
-            style={{
-              position: "absolute",
-              top: "1px",
-              left: "1px",
-              width: "25px",
-              height: "25px",
-              zIndex: 2,
-            }}
-            // onClick={}
-          />
+        <div className="content-wrapper">
           <Grid n={generateNumber()} />  
-          <InfoCards />
         </div>
       </main>
+      <Sidebar />
       <Footer />
     </div>
   );
