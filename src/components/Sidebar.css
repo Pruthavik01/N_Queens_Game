@@ -239,7 +239,9 @@
   }
 
   .sidebar-toggle {
+    top: 1rem;
     left: 0.75rem;
+    transform: none;
     width: 44px;
     height: 44px;
   }
@@ -264,7 +266,9 @@
   }
 
   .sidebar-toggle {
+    top: 1rem;
     left: 0.5rem;
+    transform: none;
     width: 40px;
     height: 40px;
   }

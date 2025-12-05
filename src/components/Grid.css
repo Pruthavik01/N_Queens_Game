@@ -125,14 +125,16 @@
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: rgba(31, 111, 235, 0.1);
+  background: rgba(255, 255, 255, 0.3);
   transform: translate(-50%, -50%);
   transition: width 0.4s ease, height 0.4s ease;
+  pointer-events: none;
 }
 
 .grid-item:hover::before {
   width: 100%;
   height: 100%;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .grid-item:active {
@@ -149,27 +151,10 @@
   border: 1px solid var(--border-color);
 }
 
-.light-cell:hover,
-.dark-cell:hover {
-  background: var(--bg-tertiary);
-  border-color: var(--accent-primary);
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(31, 111, 235, 0.3);
-  z-index: 10;
-}
-
 .attacked-cell {
   background: rgba(248, 81, 73, 0.15);
   border: 1px solid rgba(248, 81, 73, 0.3);
   color: var(--text-secondary);
-}
-
-.attacked-cell:hover {
-  background: rgba(248, 81, 73, 0.25);
-  border-color: var(--accent-danger);
-  transform: scale(1.05);
-  box-shadow: 0 2px 8px rgba(248, 81, 73, 0.3);
-  z-index: 10;
 }
 
 .queen-cell {
@@ -195,16 +180,7 @@
   opacity: 0.5;
 }
 
-.queen-cell:hover {
-  transform: scale(1.08) rotate(5deg);
-  box-shadow: 0 4px 16px rgba(240, 136, 62, 0.6);
-  z-index: 10;
-}
-
-.hovered {
-  transform: scale(1.1);
-  z-index: 20;
-}
+/* Hover effects removed - keeping only circle animation */
 
 .queen-icon {
   font-size: 1.2em;

@@ -8,7 +8,6 @@ export default function Grid({ n }) {
   const [queenBoard, setQueenBoard] = useState(() => init2D(n, false));
   const [text, setText] = useState(() => init2D(n, ""));
   const [puzzleColors] = useState(() => generatePuzzle(n));
-  const [hoveredCell, setHoveredCell] = useState(null);
 
   const recomputeText = (qBoard) => {
     const newText = init2D(n, "");
@@ -90,10 +89,6 @@ export default function Grid({ n }) {
       classes.push("attacked-cell");
     }
     
-    if (hoveredCell === `${row}-${col}`) {
-      classes.push("hovered");
-    }
-    
     return classes.join(" ");
   };
 
@@ -116,8 +111,6 @@ export default function Grid({ n }) {
               className={getCellClass(row, col)}
               style={getCellStyle(row, col)}
               onClick={() => handleClick(i)}
-              onMouseEnter={() => setHoveredCell(`${row}-${col}`)}
-              onMouseLeave={() => setHoveredCell(null)}
             >
               {text[row][col] === "Q" && (
                 <span className="queen-icon" role="img" aria-label="queen">
