@@ -243,6 +243,49 @@
   display: inline-block;
 }
 
+/* Winner Popup Styles */
+.winner-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  pointer-events: auto;
+  backdrop-filter: blur(8px);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.winner-popup h1 {
+  font-size: 2.2rem;
+  color: var(--text-primary);
+  font-weight: 800;
+  margin: 0.5rem 0;
+  text-shadow: 0 2px 8px rgba(31, 111, 235, 0.2);
+  animation: popupFadeIn 0.7s cubic-bezier(0.4,0,0.2,1);
+}
+
+.winner-popup p {
+  font-size: 1.2rem;
+  color: #fff;
+  background: var(--accent-primary, #1f6feb);
+  padding: 0.5rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(31, 111, 235, 0.15);
+  animation: popupFadeIn 1s cubic-bezier(0.4,0,0.2,1);
+}
+
+@keyframes popupFadeIn {
+  from { opacity: 0; transform: scale(0.8);}
+  to { opacity: 1; transform: scale(1);}
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .grid-wrapper {
