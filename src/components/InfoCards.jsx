@@ -24,7 +24,7 @@ export default function InfoCards() {
         <div className="card-body">
           <ul className="card-list">
             <li>Click on empty squares to place a queen</li>
-            <li>Queens attack horizontally, vertically, and diagonally</li>
+            <li>Your goal is to have exactly one in each row, column, and color region.</li>
             <li>Try to place all queens without conflicts</li>
           </ul>
         </div>
@@ -38,7 +38,7 @@ export default function InfoCards() {
           <ul className="card-list">
             <li>No two queens in the same row</li>
             <li>No two queens in the same column</li>
-            <li>No two queens on the same diagonal</li>
+            <li>No two queens touching each other</li>
           </ul>
         </div>
       </div>
