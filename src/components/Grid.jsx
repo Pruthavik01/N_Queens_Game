@@ -8,6 +8,7 @@ export default function Grid({ n }) {
   const [queenBoard, setQueenBoard] = useState(() => init2D(n, false));
   const [text, setText] = useState(() => init2D(n, ""));
   const [puzzleColors] = useState(() => generatePuzzle(n));
+  const [isWin, setIsWin] = useState(false);
 
   const recomputeText = (qBoard) => {
     const newText = init2D(n, "");
@@ -67,9 +68,24 @@ export default function Grid({ n }) {
       newBoard[row][col] = !newBoard[row][col];
       // Recompute everything based on new queenBoard
       recomputeText(newBoard);
+      checkWin(newBoard);
       return newBoard;
     });
   };
+
+  const checkWin = (board) => {
+    let count = 0;
+    for (let r = 0; r < n; r++) {
+      for (let c = 0; c < n; c++) {
+        if (board[r][c]) count++;
+      }
+    }
+
+    if (count === n) {
+      setIsWin(true);
+    }
+  };
+
 
   const handleClick = (i) => {
     const row = Math.floor(i / n);
@@ -84,14 +100,15 @@ export default function Grid({ n }) {
   useEffect(() => {
     let interval;
 
-    if (startTime !== null) {
+    if (startTime !== null && !isWin) {
       interval = setInterval(() => {
         setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [startTime]);
+  }, [startTime, isWin]);
+
 
 
   const getCellStyle = (row, col) => {
@@ -108,7 +125,7 @@ export default function Grid({ n }) {
     } else if (text[row][col] === "x") {
       classes.push("attacked-cell");
     }
-    
+
     return classes.join(" ");
   };
 
@@ -149,6 +166,14 @@ export default function Grid({ n }) {
           );
         })}
       </div>
+
+      {isWin && (
+        <div className="winner-popup">
+          <h1>🎉 Winner! 🎉</h1>
+          <p>Your time: {formatTime(elapsedTime)}</p>
+        </div>
+      )}
+
     </div>
   );
 }
