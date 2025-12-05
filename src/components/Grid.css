@@ -211,13 +211,15 @@
   display: inline-block;
   animation: queenFloat 2s ease-in-out infinite;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  color: var(--bg-primary);
+  font-weight: 300;
 }
 
 .attack-mark {
-  font-size: 1.2em;
-  opacity: 0.4;
+  font-size: 1em;
+  opacity: 0.6;
   font-weight: 300;
-  color: var(--accent-danger);
+  color: var(--bg-primary);
 }
 
 @keyframes queenPlaced {

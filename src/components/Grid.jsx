@@ -77,20 +77,6 @@ export default function Grid({ n }) {
 
   const getCellStyle = (row, col) => {
     let backgroundColor = puzzleColors[row][col];
-    
-    // Add opacity to base colors for modern look on dark background
-    if (text[row][col] !== "Q" && text[row][col] !== "x") {
-      // Use optimal opacity for vibrant modern colors on dark theme
-      backgroundColor = hexToRgba(backgroundColor, 0.35);
-    }
-    
-    // Override colors based on state
-    if (text[row][col] === "Q") {
-      backgroundColor = "rgba(251, 191, 36, 0.7)"; // Amber/Gold for queens
-    } else if (text[row][col] === "x") {
-      backgroundColor = "rgba(239, 68, 68, 0.25)"; // Red for attacked cells
-    }
-    
     return { backgroundColor };
   };
 
