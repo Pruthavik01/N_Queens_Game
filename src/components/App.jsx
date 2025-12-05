@@ -28,7 +28,7 @@ export default function App() {
               height: "25px",
               zIndex: 2,
             }}
-            onClick={}
+            // onClick={}
           />
           <Grid n={generateNumber()} />  
           <InfoCards />
