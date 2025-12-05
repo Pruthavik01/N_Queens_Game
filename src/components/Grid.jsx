@@ -48,9 +48,19 @@ export default function Grid({ n }) {
     recomputeText(queenBoard);
   }, [n]);
 
+  const [startTime, setStartTime] = useState(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+
+  // Helper to format time as mm:ss
+  const formatTime = (totalSeconds) => {
+    const min = Math.floor(totalSeconds / 60);
+    const sec = totalSeconds % 60;
+    return `${min.toString().padStart(2, "0")}:${sec.toString().padStart(2, "0")}`;
+  };
+
   const toggle = (row, col) => {
     if (text[row][col] == "x") return;
-    
+
     setQueenBoard((prev) => {
       const newBoard = prev.map((r) => [...r]);
       // If board has Q, remove it; otherwise place it
@@ -64,15 +74,25 @@ export default function Grid({ n }) {
   const handleClick = (i) => {
     const row = Math.floor(i / n);
     const col = i % n;
+    if (startTime === null) {
+      setStartTime(Date.now());
+    }
+
     toggle(row, col);
   };
 
-  const hexToRgba = (hex, alpha) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-  };
+  useEffect(() => {
+    let interval;
+
+    if (startTime !== null) {
+      interval = setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [startTime]);
+
 
   const getCellStyle = (row, col) => {
     let backgroundColor = puzzleColors[row][col];
@@ -81,7 +101,7 @@ export default function Grid({ n }) {
 
   const getCellClass = (row, col) => {
     const classes = ["grid-item"];
-    
+
     // Override with state-based classes
     if (text[row][col] === "Q") {
       classes.push("queen-cell");
@@ -92,8 +112,13 @@ export default function Grid({ n }) {
     return classes.join(" ");
   };
 
+
   return (
     <div className="grid-wrapper">
+      <div className="timer">
+        Time: {formatTime(elapsedTime)}
+      </div>
+
       <div
         className="grid-container"
         style={{
