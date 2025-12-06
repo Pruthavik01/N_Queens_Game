@@ -15,6 +15,8 @@ export default function Grid({ n: initialN }) {
   const [text, setText] = useState(() => init2D(n, ""));
   const [puzzleColors, setPuzzleColors] = useState(() => generatePuzzle(n));
   const [isWin, setIsWin] = useState(false);
+  const [violatingQueens, setViolatingQueens] = useState(() => init2D(n, false));
+  const [autoCheck, setAutoCheck] = useState(false);
 
   const recomputeText = (qBoard, boardSize = n) => {
     const newText = init2D(boardSize, "");
@@ -66,7 +68,7 @@ export default function Grid({ n: initialN }) {
   };
 
   const toggle = (row, col) => {
-    if (text[row][col] == "x") return;
+    // if (text[row][col] == "x") return;
 
     setQueenBoard((prev) => {
       const newBoard = prev.map((r) => [...r]);
@@ -79,19 +81,147 @@ export default function Grid({ n: initialN }) {
     });
   };
 
-  const checkWin = (board, boardSize = n) => {
-    let count = 0;
+  // Helper to find violating queens
+  const computeViolations = (board, boardSize = n) => {
+    const violations = init2D(boardSize, false);
+
+    // Row violations
     for (let r = 0; r < boardSize; r++) {
+      let queens = [];
       for (let c = 0; c < boardSize; c++) {
-        if (board[r][c]) count++;
+        if (board[r][c]) queens.push([r, c]);
+      }
+      if (queens.length !== 1) {
+        queens.forEach(([rr, cc]) => violations[rr][cc] = true);
       }
     }
 
-    if (count === boardSize) {
-      setIsWin(true);
+    // Column violations
+    for (let c = 0; c < boardSize; c++) {
+      let queens = [];
+      for (let r = 0; r < boardSize; r++) {
+        if (board[r][c]) queens.push([r, c]);
+      }
+      if (queens.length !== 1) {
+        queens.forEach(([rr, cc]) => violations[rr][cc] = true);
+      }
     }
+
+    // Color region violations
+    const colorMap = new Map();
+    for (let r = 0; r < boardSize; r++) {
+      for (let c = 0; c < boardSize; c++) {
+        if (board[r][c]) {
+          const color = puzzleColors[r][c];
+          if (!colorMap.has(color)) colorMap.set(color, []);
+          colorMap.get(color).push([r, c]);
+        }
+      }
+    }
+    for (let queens of colorMap.values()) {
+      if (queens.length !== 1) {
+        queens.forEach(([rr, cc]) => violations[rr][cc] = true);
+      }
+    }
+
+    // Adjacency violations
+    const drc = [
+      [-1, -1], [-1, 0], [-1, 1],
+      [0, -1],           [0, 1],
+      [1, -1],  [1, 0],  [1, 1],
+    ];
+    for (let r = 0; r < boardSize; r++) {
+      for (let c = 0; c < boardSize; c++) {
+        if (board[r][c]) {
+          for (let [dr, dc] of drc) {
+            const nr = r + dr, nc = c + dc;
+            if (
+              nr >= 0 && nr < boardSize &&
+              nc >= 0 && nc < boardSize &&
+              board[nr][nc]
+            ) {
+              violations[r][c] = true;
+              // Also mark the neighbor queen as violating
+              violations[nr][nc] = true;
+            }
+          }
+        }
+      }
+    }
+
+    return violations;
   };
 
+  const checkWin = (board, boardSize = n) => {
+    const violations = computeViolations(board, boardSize);
+    setViolatingQueens(violations);
+
+    // Win only if there are no violations and all rules are satisfied
+    for (let r = 0; r < boardSize; r++) {
+      for (let c = 0; c < boardSize; c++) {
+        if (violations[r][c]) return setIsWin(false);
+      }
+    }
+
+    // 1. Check one queen per row
+    for (let r = 0; r < boardSize; r++) {
+      let rowCount = 0;
+      for (let c = 0; c < boardSize; c++) {
+        if (board[r][c]) rowCount++;
+      }
+      if (rowCount !== 1) return setIsWin(false);
+    }
+
+    // 2. Check one queen per column
+    for (let c = 0; c < boardSize; c++) {
+      let colCount = 0;
+      for (let r = 0; r < boardSize; r++) {
+        if (board[r][c]) colCount++;
+      }
+      if (colCount !== 1) return setIsWin(false);
+    }
+
+    // 3. Check one queen per color region
+    // We'll use a Map to count queens per color
+    const colorMap = new Map();
+    for (let r = 0; r < boardSize; r++) {
+      for (let c = 0; c < boardSize; c++) {
+        if (board[r][c]) {
+          const color = puzzleColors[r][c];
+          colorMap.set(color, (colorMap.get(color) || 0) + 1);
+        }
+      }
+    }
+    for (let count of colorMap.values()) {
+      if (count !== 1) return setIsWin(false);
+    }
+
+    // 4. No two queens are adjacent (touching, including diagonals)
+    const drc = [
+      [-1, -1], [-1, 0], [-1, 1],
+      [0, -1],           [0, 1],
+      [1, -1],  [1, 0],  [1, 1],
+    ];
+    for (let r = 0; r < boardSize; r++) {
+      for (let c = 0; c < boardSize; c++) {
+        if (board[r][c]) {
+          for (let [dr, dc] of drc) {
+            const nr = r + dr, nc = c + dc;
+            if (
+              nr >= 0 && nr < boardSize &&
+              nc >= 0 && nc < boardSize &&
+              board[nr][nc]
+            ) {
+              return setIsWin(false);
+            }
+          }
+        }
+      }
+    }
+
+    // If all checks pass, it's a win
+    setIsWin(true);
+  };
 
   const handleClick = (i) => {
     const row = Math.floor(i / n);
@@ -115,8 +245,6 @@ export default function Grid({ n: initialN }) {
     return () => clearInterval(interval);
   }, [startTime, isWin]);
 
-
-
   const getCellStyle = (row, col) => {
     let backgroundColor = puzzleColors[row][col];
     return { backgroundColor };
@@ -124,14 +252,12 @@ export default function Grid({ n: initialN }) {
 
   const getCellClass = (row, col) => {
     const classes = ["grid-item"];
-
-    // Override with state-based classes
     if (text[row][col] === "Q") {
       classes.push("queen-cell");
+      if (violatingQueens[row][col]) classes.push("violating");
     } else if (text[row][col] === "x") {
       classes.push("attacked-cell");
     }
-
     return classes.join(" ");
   };
 
@@ -148,10 +274,33 @@ export default function Grid({ n: initialN }) {
     recomputeText(newBoard, newN);
   };
 
+  const clearBoard = () => {
+    setQueenBoard(init2D(n, false));
+    setText(init2D(n, ""));
+    setIsWin(false);
+    // setStartTime(null);
+    // setElapsedTime(0);
+    recomputeText(init2D(n, false), n);
+  };
+
   return (
     <div className="grid-wrapper">
-      <div className="timer">
-        Time: {formatTime(elapsedTime)}
+      <div className="top-bar">
+        <div className="top-bar-left">
+          <div className="timer">
+            Time: {formatTime(elapsedTime)}
+          </div>
+        </div>
+        <div className="top-bar-right">
+          <div className="clear" onClick={clearBoard}>Clear</div>
+          <label htmlFor="auto-check" style={{ margin: 0, fontSize: "1rem" }}>Auto-check</label>
+          <input
+            type="checkbox"
+            id="auto-check"
+            checked={autoCheck}
+            onChange={e => setAutoCheck(e.target.checked)}
+          />
+        </div>
       </div>
 
       <div
@@ -177,7 +326,7 @@ export default function Grid({ n: initialN }) {
                   ♛
                 </span>
               )}
-              {text[row][col] === "x" && (
+              {text[row][col] === "x" && autoCheck && (
                 <span className="attack-mark">×</span>
               )}
             </div>
