@@ -127,8 +127,8 @@ export default function Grid({ n: initialN }) {
     // Adjacency violations
     const drc = [
       [-1, -1], [-1, 0], [-1, 1],
-      [0, -1],           [0, 1],
-      [1, -1],  [1, 0],  [1, 1],
+      [0, -1], [0, 1],
+      [1, -1], [1, 0], [1, 1],
     ];
     for (let r = 0; r < boardSize; r++) {
       for (let c = 0; c < boardSize; c++) {
@@ -199,8 +199,8 @@ export default function Grid({ n: initialN }) {
     // 4. No two queens are adjacent (touching, including diagonals)
     const drc = [
       [-1, -1], [-1, 0], [-1, 1],
-      [0, -1],           [0, 1],
-      [1, -1],  [1, 0],  [1, 1],
+      [0, -1], [0, 1],
+      [1, -1], [1, 0], [1, 1],
     ];
     for (let r = 0; r < boardSize; r++) {
       for (let c = 0; c < boardSize; c++) {
@@ -278,8 +278,6 @@ export default function Grid({ n: initialN }) {
     setQueenBoard(init2D(n, false));
     setText(init2D(n, ""));
     setIsWin(false);
-    // setStartTime(null);
-    // setElapsedTime(0);
     recomputeText(init2D(n, false), n);
   };
 
@@ -293,13 +291,22 @@ export default function Grid({ n: initialN }) {
         </div>
         <div className="top-bar-right">
           <div className="clear" onClick={clearBoard}>Clear</div>
-          <label htmlFor="auto-check" style={{ margin: 0, fontSize: "1rem" }}>Auto-check</label>
-          <input
-            type="checkbox"
-            id="auto-check"
-            checked={autoCheck}
-            onChange={e => setAutoCheck(e.target.checked)}
-          />
+          <div className="checkBoxDiv">
+            <label htmlFor="auto-check" style={{ margin: 0, fontSize: "1rem" }}>
+              Auto-check
+            </label>
+
+            <label className="switch">
+              <input
+                type="checkbox"
+                id="auto-check"
+                checked={autoCheck}
+                onChange={e => setAutoCheck(e.target.checked)}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+
         </div>
       </div>
 
