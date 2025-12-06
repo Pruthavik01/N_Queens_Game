@@ -281,6 +281,31 @@
   animation: popupFadeIn 1s cubic-bezier(0.4,0,0.2,1);
 }
 
+.restart-button {
+  font-size: 1.1rem;
+  color: #fff;
+  background: var(--accent-secondary, #238636);
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+  transition: all 0.3s ease;
+  animation: popupFadeIn 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+.restart-button:hover {
+  background: var(--accent-secondary, #2ea043);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(35, 134, 54, 0.4);
+}
+
+.restart-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(35, 134, 54, 0.3);
+}
+
 @keyframes popupFadeIn {
   from { opacity: 0; transform: scale(0.8);}
   to { opacity: 1; transform: scale(1);}
